@@ -2,6 +2,7 @@ package com.karthik.taskplatform.QuizMonolithicProject.service;
 
 import com.karthik.taskplatform.QuizMonolithicProject.domain.Questions;
 import com.karthik.taskplatform.QuizMonolithicProject.domain.Quiz;
+import com.karthik.taskplatform.QuizMonolithicProject.dto.AnswersDTO;
 import com.karthik.taskplatform.QuizMonolithicProject.dto.QuestionResponseDTO;
 import com.karthik.taskplatform.QuizMonolithicProject.repository.QuestionRepo;
 import com.karthik.taskplatform.QuizMonolithicProject.repository.QuizRepo;
@@ -10,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.awt.desktop.QuitEvent;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +44,30 @@ public class QuizService
         return questionResponseDTOS;
 
     }
+    public Integer calculateScore(int id, List<AnswersDTO> answersDTO)
+    {
+        Quiz quiz = quizRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("ID NOT FOUND " + id));
+        List<Questions> questionsList = quiz.getQuestions();
+        Integer answer =0;
+        Map<Integer, String > correctAnswer = new HashMap<>();
+
+        for(Questions q : questionsList)
+        {
+            correctAnswer.put(q.getId(), q.getRightAnswer());
+        }
+
+        for(AnswersDTO answers : answersDTO)
+        {
+            String correct = correctAnswer.get(answers.getQuestionId());
+
+            if(correct != null && correct.equals(answers.getChoosenAnswer()))
+            {
+                answer++;
+            }
+        }
+        return answer;
+
+    }
 
     private QuestionResponseDTO mapToQuestionResponse(Questions questions)
     {
@@ -53,4 +80,6 @@ public class QuizService
 
         return questionResponseDTO;
     }
+
+
 }

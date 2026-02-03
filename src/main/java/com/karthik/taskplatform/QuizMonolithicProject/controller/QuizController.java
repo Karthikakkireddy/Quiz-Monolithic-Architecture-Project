@@ -2,6 +2,7 @@ package com.karthik.taskplatform.QuizMonolithicProject.controller;
 
 
 import com.karthik.taskplatform.QuizMonolithicProject.domain.Quiz;
+import com.karthik.taskplatform.QuizMonolithicProject.dto.AnswersDTO;
 import com.karthik.taskplatform.QuizMonolithicProject.dto.QuestionResponseDTO;
 import com.karthik.taskplatform.QuizMonolithicProject.service.QuizService;
 import lombok.RequiredArgsConstructor;
@@ -33,5 +34,11 @@ public class QuizController
     public ResponseEntity<List<QuestionResponseDTO>> getQuestions(@PathVariable int id)
     {
         return ResponseEntity.ok(quizService.getQuestions(id));
+    }
+
+    @PostMapping("/submit/{id}")
+    public ResponseEntity<Integer> calculateScore(@PathVariable int id, @RequestBody List<AnswersDTO> answersDTO)
+    {
+        return ResponseEntity.ok(quizService.calculateScore(id, answersDTO));
     }
 }
